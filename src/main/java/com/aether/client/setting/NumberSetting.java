@@ -3,6 +3,8 @@ package com.aether.client.setting;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+import java.util.Locale;
+
 public final class NumberSetting extends Setting<Double> {
     private final double min;
     private final double max;
@@ -35,6 +37,12 @@ public final class NumberSetting extends Setting<Double> {
         return value.intValue();
     }
 
+    /** Dokunmatik GUI icin: -1 azalt, +1 arttir. */
+    public void increment(int direction) {
+        double s = step > 0 ? step : (max - min) / 20.0;
+        set(value + direction * s);
+    }
+
     @Override
     public void set(Double v) {
         double clamped = Math.max(min, Math.min(max, v));
@@ -43,6 +51,24 @@ public final class NumberSetting extends Setting<Double> {
             clamped = Math.max(min, Math.min(max, clamped));
         }
         this.value = clamped;
+    }
+
+    @Override
+    public String display() {
+        if (step >= 1) {
+            return String.valueOf(value.intValue());
+        }
+        return String.format(Locale.ROOT, "%.2f", value);
+    }
+
+    @Override
+    public boolean setFromString(String text) {
+        try {
+            set(Double.parseDouble(text));
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     @Override

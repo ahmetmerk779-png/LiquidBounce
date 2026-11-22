@@ -29,6 +29,14 @@ public abstract class Setting<T> {
         this.value = defaultValue;
     }
 
+    /** GUI ve komutlarda gosterilen deger metni. */
+    public String display() {
+        return String.valueOf(value);
+    }
+
+    /** Komuttan gelen metni ayrıştırır; gecersizse false doner. */
+    public abstract boolean setFromString(String text);
+
     public abstract JsonElement toJson();
 
     public abstract void fromJson(JsonElement element);

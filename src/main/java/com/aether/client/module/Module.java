@@ -1,6 +1,7 @@
 package com.aether.client.module;
 
 import com.aether.client.AetherClient;
+import com.aether.client.event.EventBus;
 import com.aether.client.setting.Setting;
 
 import java.util.ArrayList;
@@ -34,11 +35,17 @@ public abstract class Module {
 
     protected void onDisable() {}
 
+    /** HUD'daki aktif modul listesinde gorunsun mu? */
+    public boolean isVisibleInList() {
+        return true;
+    }
+
     public final void setEnabled(boolean enabled) {
         if (this.enabled == enabled) {
             return;
         }
         this.enabled = enabled;
+        AetherClient.modules().markDirty();
         if (enabled) {
             onEnable();
         } else {
@@ -51,7 +58,7 @@ public abstract class Module {
         setEnabled(!enabled);
     }
 
-    protected final com.aether.client.event.EventBus bus() {
+    protected final EventBus bus() {
         return AetherClient.bus();
     }
 

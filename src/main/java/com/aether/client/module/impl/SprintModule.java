@@ -12,7 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
  * Mojang mappings kullanilir (Minecraft, LocalPlayer).
  */
 public final class SprintModule extends Module {
-    private final BoolSetting keepWhenHungry = add(new BoolSetting("Aclikta Da", false));
+    private final BoolSetting whenHungry = add(new BoolSetting("WhenHungry", false));
 
     public SprintModule() {
         super("Sprint", "Ileri giderken otomatik kosar.", Category.MOVEMENT);
@@ -30,7 +30,7 @@ public final class SprintModule extends Module {
             return;
         }
         boolean forward = mc.options.keyUp.isDown();
-        boolean fedEnough = keepWhenHungry.get() || player.getFoodData().getFoodLevel() > 6;
+        boolean fedEnough = whenHungry.get() || player.getFoodData().getFoodLevel() > 6;
         if (forward && fedEnough && !player.isShiftKeyDown() && !player.horizontalCollision) {
             player.setSprinting(true);
         }

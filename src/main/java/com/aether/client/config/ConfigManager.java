@@ -46,8 +46,8 @@ public final class ConfigManager {
                     }
                 }
                 JsonElement enabled = node.get("enabled");
-                if (enabled != null && enabled.getAsBoolean()) {
-                    module.setEnabled(true);
+                if (enabled != null && enabled.isJsonPrimitive()) {
+                    module.setEnabled(enabled.getAsBoolean());
                 }
             }
         } catch (IOException | RuntimeException e) {

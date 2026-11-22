@@ -17,21 +17,30 @@ public final class EnumSetting<E extends Enum<E>> extends Setting<E> {
     }
 
     @Override
+    public String display() {
+        return value.name();
+    }
+
+    @Override
+    public boolean setFromString(String text) {
+        for (E c : constants) {
+            if (c.name().equalsIgnoreCase(text)) {
+                value = c;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public JsonElement toJson() {
         return new JsonPrimitive(value.name());
     }
 
     @Override
     public void fromJson(JsonElement element) {
-        if (!element.isJsonPrimitive()) {
-            return;
-        }
-        String name = element.getAsString();
-        for (E c : constants) {
-            if (c.name().equals(name)) {
-                value = c;
-                return;
-            }
+        if (element.isJsonPrimitive()) {
+            setFromString(element.getAsString());
         }
     }
 }
