@@ -22,6 +22,8 @@ Sohbeti ac ve yaz:
 | `.toggle <modul>` | Modulu acar/kapatir |
 | `.set <modul> <ayar> [deger]` | Ayari gosterir/degistirir |
 | `.save` | Config'i kaydeder |
+| `.packets [reset]` | Paket sayaclarini gosterir (once `PacketLogger` modulunu ac) |
+| `.look <yaw> <pitch>` | Rotasyon yoneticisini test eder |
 | `.help` | Komut listesi |
 
 Normal sohbette `.` ile baslayan mesaj gondermek icin `..` ile basla.
@@ -38,10 +40,22 @@ cok modul varsa Onceki/Sonraki.
 - `gui/`     Dokunmatik ClickGUI (sadece Button bilesenleri)
 - `hud/`     Watermark ve aktif modul listesi
 - `config/`  `config/aether.json`
+- `mixin/`   ConnectionMixin (paket hook'u, `require = 0`: hedef bulunamazsa oyun cokmez)
+- `rotation/` Rotation (saf matematik) ve RotationManager (oncelikli, hiz sinirli)
 
 Yeni modul: `module/impl/` altina sinif ekle, `ModuleManager.registerAll()` icine bir satir yaz.
 Menu, komutlar ve config otomatik tanir.
 
+## Faz 3 notlari
+
+- **Paket hook'u dogrulanmadi:** `ConnectionMixin` 1.21.11 metot adlarini bellekten kullanir.
+  Calismazsa oyun cokmez, `.packets` sifir gosterir. O zaman `logs/latest.log` icindeki Mixin
+  uyarisini gelistiriciye ilet.
+- **Thread uyarisi:** Paket olaylari netty thread'inde gelir. Dinleyiciler oyun nesnelerine
+  dokunmadan once veriyi `TickEvent`'e tasimali (SetbackGuard bunu ornek alir).
+- **SetbackGuard:** Ust uste geri cekilmede (varsayilan 5 sn'de 3) Movement ve Combat
+  modullerini kapatir. `/tp` gibi normal isinlanmalar da sayilir.
+
 ## Sirada
 
-Faz 3: paket olaylari, rotasyon yoneticisi, setback algilama (Mixin gerektirir).
+Faz 4: render altyapisi ve render modulleri (ESP, Fullbright, Zoom, Nametags).

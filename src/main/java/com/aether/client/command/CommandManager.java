@@ -3,6 +3,8 @@ package com.aether.client.command;
 import com.aether.client.AetherClient;
 import com.aether.client.module.Category;
 import com.aether.client.module.Module;
+import com.aether.client.module.impl.PacketLoggerModule;
+import com.aether.client.rotation.Rotation;
 import com.aether.client.setting.Setting;
 import com.aether.client.util.Names;
 import net.minecraft.client.Minecraft;
@@ -31,6 +33,8 @@ public final class CommandManager {
             case "toggle", "t" -> toggle(args);
             case "set" -> set(args);
             case "gui" -> AetherClient.requestGui();
+            case "packets" -> packets(args);
+            case "look" -> look(args);
             case "save" -> {
                 AetherClient.config().save();
                 reply("Config kaydedildi.");
@@ -46,6 +50,44 @@ public final class CommandManager {
         reply(PREFIX + "toggle <modul>               modulu acar/kapatir");
         reply(PREFIX + "set <modul> <ayar> [deger]   ayari gosterir/degistirir");
         reply(PREFIX + "save                         config'i kaydeder");
+        reply(PREFIX + "packets [reset]              paket sayaclarini gosterir/sifirlar");
+        reply(PREFIX + "look <yaw> <pitch>           rotasyon yoneticisini test eder");
+    }
+
+    private void packets(String[] args) {
+        Module m = AetherClient.modules().get("PacketLogger");
+        if (!(m instanceof PacketLoggerModule logger)) {
+            reply("PacketLogger bulunamadi.");
+            return;
+        }
+        if (!logger.isEnabled()) {
+            reply("PacketLogger kapali. Once: " + PREFIX + "toggle PacketLogger");
+            return;
+        }
+        if (args.length > 1 && args[1].equalsIgnoreCase("reset")) {
+            logger.reset();
+            reply("Sayaclar sifirlandi.");
+            return;
+        }
+        for (String line : logger.summary()) {
+            reply(line);
+        }
+    }
+
+    private void look(String[] args) {
+        if (args.length < 3) {
+            reply("Kullanim: " + PREFIX + "look <yaw> <pitch>");
+            return;
+        }
+        try {
+            float yaw = Float.parseFloat(args[1]);
+            float pitch = Float.parseFloat(args[2]);
+            AetherClient.rotations().requestHold(this,
+                    new Rotation(Rotation.wrapDegrees(yaw), Math.max(-90f, Math.min(90f, pitch))), 10, 15f);
+            reply("Rotasyon istendi.");
+        } catch (NumberFormatException e) {
+            reply("Gecersiz sayi.");
+        }
     }
 
     private void list() {

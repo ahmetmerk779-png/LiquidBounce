@@ -1,6 +1,8 @@
 package com.aether.client.module;
 
 import com.aether.client.module.impl.HudModule;
+import com.aether.client.module.impl.PacketLoggerModule;
+import com.aether.client.module.impl.SetbackGuardModule;
 import com.aether.client.module.impl.SprintModule;
 import com.aether.client.util.Names;
 
@@ -23,6 +25,8 @@ public final class ModuleManager {
     public void registerAll() {
         register(new HudModule());
         register(new SprintModule());
+        register(new PacketLoggerModule());
+        register(new SetbackGuardModule());
     }
 
     private void register(Module module) {

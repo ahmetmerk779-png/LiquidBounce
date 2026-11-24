@@ -8,6 +8,7 @@ import com.aether.client.gui.ClickGuiScreen;
 import com.aether.client.hud.HudRenderer;
 import com.aether.client.module.ModuleManager;
 import com.aether.client.module.impl.HudModule;
+import com.aether.client.rotation.RotationManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -22,6 +23,7 @@ public final class AetherClient implements ClientModInitializer {
     private static final EventBus BUS = new EventBus();
     private static final ModuleManager MODULES = new ModuleManager();
     private static final CommandManager COMMANDS = new CommandManager();
+    private static final RotationManager ROTATIONS = new RotationManager();
     private static ConfigManager config;
     private static HudModule hud;
     private static boolean guiRequested;
@@ -38,6 +40,10 @@ public final class AetherClient implements ClientModInitializer {
         return config;
     }
 
+    public static RotationManager rotations() {
+        return ROTATIONS;
+    }
+
     public static HudModule hud() {
         return hud;
     }
@@ -52,6 +58,7 @@ public final class AetherClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ROTATIONS.init();
         MODULES.registerAll();
         hud = (HudModule) MODULES.get("Hud");
         hud.setEnabled(true); // ilk acilis varsayilani; config varsa asagida ustune yazilir

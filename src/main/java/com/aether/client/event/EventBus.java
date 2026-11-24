@@ -29,6 +29,12 @@ public final class EventBus {
         list.sort(Comparator.comparingInt((Listener<?> l) -> l.priority()).reversed());
     }
 
+    /** Paket gibi sik olaylarda, dinleyen yokken nesne uretmemek icin. */
+    public boolean hasListeners(Class<? extends Event> type) {
+        List<Listener<?>> list = listeners.get(type);
+        return list != null && !list.isEmpty();
+    }
+
     public void unsubscribeAll(Object owner) {
         for (List<Listener<?>> list : listeners.values()) {
             list.removeIf(l -> l.owner() == owner);
